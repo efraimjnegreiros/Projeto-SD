@@ -8,7 +8,7 @@
 //   btn[1] = BTN2 → INC_DIGIT
 //   btn[2] = BTN3 → DEC_DIGIT
 //
-// Senha correta: 1-2-3-4  (digits[0..3] = 1,2,3,4)
+// Senha correta: 5-6-7-3  (digits[0..3] = 5,6,7,3)
 //
 // Para evitar simular 50 M ciclos nos estados de espera dos LEDs,
 // o testbench força o contador interno a zero (via 'force').
@@ -186,15 +186,15 @@ module tb_safecrackpro_top;
               dut.seg_pos1 == 7'b0000001);
 
         // =============================================================
-        // TESTE 6: Senha correta — sequência 1-2-3-4
+        // TESTE 6: Senha correta — sequência 5-6-7-3
         // =============================================================
-        $display("\n[Teste 6] Senha correta: 1-2-3-4");
+        $display("\n[Teste 6] Senha correta: 5-6-7-3");
         do_reset();
 
-        // Posição 0: colocar dígito 1
-        press_btn(3'b010);                          // 0 → 1
-        check("Pos0: digito[0] = 1",
-              dut.fsm_inst.digits[0] == 4'd1);
+        // Posição 0: colocar dígito 5
+        repeat(5) press_btn(3'b010);                // 0 → … → 5
+        check("Pos0: digito[0] = 5",
+              dut.fsm_inst.digits[0] == 4'd5);
 
         // Avançar para posição 1
         press_btn(3'b001);                          // INC_POSITION: 0 → 1
@@ -203,10 +203,10 @@ module tb_safecrackpro_top;
         check("seg_cur_pos exibe '2' (7'b0010010)",
               dut.seg_cur_pos == 7'b0010010);
 
-        // Posição 1: colocar dígito 2
-        press_btn(3'b010); press_btn(3'b010);       // 0 → 1 → 2
-        check("Pos1: digito[1] = 2",
-              dut.fsm_inst.digits[1] == 4'd2);
+        // Posição 1: colocar dígito 6
+        repeat(6) press_btn(3'b010);                // 0 → … → 6
+        check("Pos1: digito[1] = 6",
+              dut.fsm_inst.digits[1] == 4'd6);
 
         // Avançar para posição 2
         press_btn(3'b001);                          // INC_POSITION: 1 → 2
@@ -215,10 +215,10 @@ module tb_safecrackpro_top;
         check("seg_cur_pos exibe '3' (7'b0000110)",
               dut.seg_cur_pos == 7'b0000110);
 
-        // Posição 2: colocar dígito 3
-        press_btn(3'b010); press_btn(3'b010); press_btn(3'b010); // 0 → 1 → 2 → 3
-        check("Pos2: digito[2] = 3",
-              dut.fsm_inst.digits[2] == 4'd3);
+        // Posição 2: colocar dígito 7
+        repeat(7) press_btn(3'b010);                // 0 → … → 7
+        check("Pos2: digito[2] = 7",
+              dut.fsm_inst.digits[2] == 4'd7);
 
         // Avançar para posição 3 (última)
         press_btn(3'b001);                          // INC_POSITION: 2 → 3
@@ -227,11 +227,10 @@ module tb_safecrackpro_top;
         check("seg_cur_pos exibe '4' (7'b1001100)",
               dut.seg_cur_pos == 7'b1001100);
 
-        // Posição 3: colocar dígito 4
-        press_btn(3'b010); press_btn(3'b010);
-        press_btn(3'b010); press_btn(3'b010);       // 0 → 1 → 2 → 3 → 4
-        check("Pos3: digito[3] = 4",
-              dut.fsm_inst.digits[3] == 4'd4);
+        // Posição 3: colocar dígito 3
+        repeat(3) press_btn(3'b010);                // 0 → 1 → 2 → 3
+        check("Pos3: digito[3] = 3",
+              dut.fsm_inst.digits[3] == 4'd3);
 
         // INC_POSITION na posição 3 → CHECK_PASSWORD → WAIT_GREEN_LED_TIME
         press_btn(3'b001);

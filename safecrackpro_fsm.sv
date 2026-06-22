@@ -1,4 +1,8 @@
-module safecrackpro_fsm (
+module safecrackpro_fsm #(
+    // Senha correta do cofre (dígitos 5-6-7-3).
+    // Empacotada como [3:0][3:0]: índice 0 = dígito menos significativo.
+    parameter logic [3:0][3:0] PASSWORD = {4'd3, 4'd7, 4'd6, 4'd5}
+) (
     input  logic        clk,
     input  logic        rstn,
     input  logic [2:0]  btn,
@@ -99,7 +103,7 @@ module safecrackpro_fsm (
 
             
             CHECK_PASSWORD: begin
-                if (digits[0] == 4'd5 && digits[1] == 4'd6 && digits[2] == 4'd7 && digits[3] == 4'd3) begin
+                if (digits == PASSWORD) begin
                     next_state = WAIT_GREEN_LED_TIME;
                     next_led_time_cnt = TIME_5S;
                 end else begin
